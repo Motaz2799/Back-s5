@@ -3,16 +3,12 @@ package com.cra.portfolio.service;
 import com.cra.portfolio.dto.ApplicationInterfaceRequest;
 import com.cra.portfolio.dto.ApplicationInterfaceResponse;
 import com.cra.portfolio.exception.NotFoundCustomException;
-import com.cra.portfolio.model.Application;
 import com.cra.portfolio.model.ApplicationsInterface;
-import com.cra.portfolio.model.ApplicationsKey;
 import com.cra.portfolio.repository.ApplicationRepository;
 import com.cra.portfolio.repository.ApplicationsInterfaceRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
@@ -36,12 +32,9 @@ public class ApplicationsInterfaceService {
     private EntityManager entityManager;
 
     public ApplicationInterfaceResponse createAppInterface(ApplicationInterfaceRequest request) {
-        ApplicationsKey applicationsKey = new ApplicationsKey();
-        applicationsKey.setApplicationSrcId(request.getApplicationSrc().getId());
-        applicationsKey.setApplicationTargetId(request.getApplicationTarget().getId());
+
 
         ApplicationsInterface applicationsInterface = ApplicationsInterface.builder()
-                .id(applicationsKey)
                 .protocol(request.getProtocol())
                 .applicationSrc(request.getApplicationSrc())
                 .applicationTarget(request.getApplicationTarget())
@@ -73,7 +66,7 @@ public class ApplicationsInterfaceService {
 
 
     @Transactional
-    public ApplicationInterfaceResponse updateAppInterface(Integer srcId, Integer targetId, ApplicationInterfaceRequest updatedInterface) {
+    public ApplicationInterfaceResponse updateAppInterface(Integer id, ApplicationInterfaceRequest updatedInterface) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
         CriteriaUpdate<ApplicationsInterface> criteriaUpdate = cb.createCriteriaUpdate(ApplicationsInterface.class);
@@ -86,14 +79,13 @@ public class ApplicationsInterfaceService {
         criteriaUpdate.set(root.get("flow"), updatedInterface.getFlow());
         criteriaUpdate.set(root.get("frequency"), updatedInterface.getFrequency());
         criteriaUpdate.set(root.get("processingMode"), updatedInterface.getProcessingMode());
-        criteriaUpdate.where(cb.and(
-                cb.equal(root.get("id").get("applicationSrcId"), srcId),
-                cb.equal(root.get("id").get("applicationTargetId"), targetId)
-        ));
+        criteriaUpdate.where(cb.equal(root.get("id"),id));
+
+
         int result = entityManager.createQuery(criteriaUpdate).executeUpdate();
         if (result == 1) {
+ApplicationsInterface updatedEntity=entityManager.find(ApplicationsInterface.class,id);
 
-            ApplicationsInterface updatedEntity = entityManager.find(ApplicationsInterface.class, new ApplicationsKey(updatedInterface.getApplicationSrc().getId(), updatedInterface.getApplicationTarget().getId()));
 
 
             return mapToAppInterfaceResponse(updatedEntity);
@@ -102,8 +94,8 @@ public class ApplicationsInterfaceService {
         }
     }
 
-    public ApplicationInterfaceResponse getAppInterfaceById(Integer srcId, Integer targetId) {
-        Optional<ApplicationsInterface> applicationsInterface = applicationsInterfaceRepository.findById(new ApplicationsKey(srcId, targetId));
+    public ApplicationInterfaceResponse getAppInterfaceById(Integer id) {
+        Optional<ApplicationsInterface> applicationsInterface = applicationsInterfaceRepository.findById(id);
         if (applicationsInterface.isPresent()) {
             return mapToAppInterfaceResponse(applicationsInterface.get());
         } else {
@@ -111,8 +103,8 @@ public class ApplicationsInterfaceService {
         }
     }
 
-    public void deleteAppInterface(Integer srcId, Integer targetId) {
-        applicationsInterfaceRepository.deleteById(new ApplicationsKey(srcId, targetId));
+    public void deleteAppInterface(Integer id) {
+        applicationsInterfaceRepository.deleteById(id);
     }
 
 

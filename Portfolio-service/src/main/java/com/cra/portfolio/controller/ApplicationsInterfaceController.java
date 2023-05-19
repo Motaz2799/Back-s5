@@ -31,24 +31,21 @@ public class ApplicationsInterfaceController {
         return applicationsInterfaceService.getAllAppInterfaces();
     }
 
-    @PutMapping("/{srcId}/{targetId}")
-    public ApplicationInterfaceResponse updateAppInterface(@PathVariable Integer srcId,
-                                                           @PathVariable Integer targetId,
+    @PutMapping("/{id}")
+    public ApplicationInterfaceResponse updateAppInterface(@PathVariable Integer id,
                                                            @RequestBody ApplicationInterfaceRequest updatedInterface) {
-        return applicationsInterfaceService.updateAppInterface(srcId, targetId, updatedInterface);
+        return applicationsInterfaceService.updateAppInterface(id, updatedInterface);
 
     }
 
-    @GetMapping("/{srcId}/{targetId}")
-    public ApplicationInterfaceResponse getApplicationInterfaceById(@PathVariable Integer srcId,
-                                                                    @PathVariable Integer targetId) {
-        return applicationsInterfaceService.getAppInterfaceById(srcId, targetId);
+    @GetMapping("/{id}")
+    public ApplicationInterfaceResponse getApplicationInterfaceById(@PathVariable Integer id) {
+        return applicationsInterfaceService.getAppInterfaceById(id);
     }
 
-    @DeleteMapping("/{srcId}/{targetId}")
-    public void deleteApplicationInterface(@PathVariable Integer srcId,
-                                           @PathVariable Integer targetId) {
-        applicationsInterfaceService.deleteAppInterface(srcId, targetId);
+    @DeleteMapping("/{id}")
+    public void deleteApplicationInterface(@PathVariable Integer id) {
+        applicationsInterfaceService.deleteAppInterface(id);
     }
 
     @GetMapping("/non-archived")

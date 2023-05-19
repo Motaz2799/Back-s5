@@ -1,19 +1,12 @@
 package com.cra.portfolio.repository;
 
 import com.cra.portfolio.model.ApplicationsInterface;
-import com.cra.portfolio.model.ApplicationsKey;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ApplicationsInterfaceRepository extends JpaRepository<ApplicationsInterface, ApplicationsKey> {
+public interface ApplicationsInterfaceRepository extends JpaRepository<ApplicationsInterface, Integer> {
 
     /*@Transactional
     default ApplicationsInterface merge(ApplicationsInterface applicationsInterface) {

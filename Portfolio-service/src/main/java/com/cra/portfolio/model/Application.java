@@ -45,6 +45,8 @@ public class Application {
             joinColumns = @JoinColumn(name = "application_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_id"))
     private List<Contact> contacts = new ArrayList<>();
+
+
     @JsonIgnore
     @OneToMany(mappedBy = "applicationSrc")
     List<ApplicationsInterface> appSrcInterfaces = new ArrayList<>();

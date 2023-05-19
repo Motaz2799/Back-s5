@@ -1,13 +1,7 @@
 package com.cra.portfolio.controller;
 
-import com.cra.portfolio.dto.ApplicationRequest;
-import com.cra.portfolio.dto.ApplicationResponse;
-import com.cra.portfolio.dto.DatabaseResponse;
-import com.cra.portfolio.dto.ServerResponse;
-import com.cra.portfolio.model.Assessment;
-import com.cra.portfolio.model.Contact;
-import com.cra.portfolio.model.Database;
-import com.cra.portfolio.model.Server;
+import com.cra.portfolio.dto.*;
+import com.cra.portfolio.model.*;
 import com.cra.portfolio.service.ApplicationService;
 import com.cra.portfolio.service.ContactService;
 import lombok.RequiredArgsConstructor;
@@ -146,6 +140,10 @@ public class ApplicationController {
     @GetMapping("/{appId}/databases")
     public List<DatabaseResponse> getNonArchivedApplicationDatabases(@PathVariable Integer appId) {
         return applicationService.getNonArchivedApplicationDatabases(appId);
+    }
+    @GetMapping("/{appId}/interfaces")
+    public List<ApplicationInterfaceResponse> getNonArchivedApplicationInterfaces(@PathVariable Integer appId) {
+        return applicationService.getNonArchivedApplicationInterfaces(appId);
     }
     @GetMapping("/{appId}/non-linked-databases")
     public List<DatabaseResponse> getNonLinkedApplicationDatabases(@PathVariable Integer appId) {

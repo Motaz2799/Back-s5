@@ -1,9 +1,6 @@
 package com.cra.portfolio.service;
 
-import com.cra.portfolio.dto.ApplicationRequest;
-import com.cra.portfolio.dto.ApplicationResponse;
-import com.cra.portfolio.dto.DatabaseResponse;
-import com.cra.portfolio.dto.ServerResponse;
+import com.cra.portfolio.dto.*;
 import com.cra.portfolio.exception.NotFoundCustomException;
 import com.cra.portfolio.model.*;
 import com.cra.portfolio.repository.*;
@@ -22,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +38,7 @@ public class ApplicationService {
     private final AssessmentService assessmentService;
     private final DatabaseService dbService;
     private final AssessmentRepository assessmentRepository;
+    private final ApplicationsInterfaceRepository applicationsInterfaceRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -563,8 +562,10 @@ public class ApplicationService {
 
         return serverRepository.findAll().stream()
                 .filter(server -> !application.getServers().contains(server))
+                .filter(server -> server.getDeletedAt() == null)
                 .map(this::mapToServerResponse)
                 .collect(Collectors.toList());
+
     }
 
 
@@ -617,6 +618,40 @@ public class ApplicationService {
                 .collect(Collectors.toList());
 
     }
+
+    public List<ApplicationInterfaceResponse> getNonArchivedApplicationInterfaces(Integer appId) {
+        Application application = applicationRepository.findById(appId)
+                .orElseThrow(() -> new IllegalArgumentException("Application not found with ID: " + appId));
+
+        Iterable<ApplicationsInterface> listAppInterfaces= applicationsInterfaceRepository.findAll().stream()
+                .filter(appInterface -> (appInterface.getApplicationSrc().equals(application)
+                || appInterface.getApplicationTarget().equals(application))
+                && appInterface.getDeletedAt() == null)
+                    .collect(Collectors.toList());
+
+        return StreamSupport.stream(listAppInterfaces.spliterator(), false)
+                .map(this::mapToInterfaceResponse)
+                .collect(Collectors.toList());
+
+
+    }
+
+    private ApplicationInterfaceResponse mapToInterfaceResponse(ApplicationsInterface appInterface) {
+        return ApplicationInterfaceResponse.builder().id(appInterface.getId())
+                .applicationSrc(appInterface.getApplicationSrc())
+                .applicationTarget(appInterface.getApplicationTarget())
+                .notes(appInterface.getNotes())
+                .frequency(appInterface.getFrequency())
+                .flow(appInterface.getFlow())
+                .processingMode(appInterface.getProcessingMode())
+                .dataFormat(appInterface.getDataFormat())
+                .protocol(appInterface.getProtocol())
+                .modifiedAt(appInterface.getModifiedAt())
+                .createdAt(appInterface.getCreatedAt())
+                .deletedAt(appInterface.getDeletedAt())
+                .build();
+    }
+
 
 
 

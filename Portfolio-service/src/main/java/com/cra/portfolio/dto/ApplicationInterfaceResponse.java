@@ -4,8 +4,6 @@ import com.cra.portfolio.enums.Flow;
 import com.cra.portfolio.enums.Frequency;
 import com.cra.portfolio.enums.ProcessingMode;
 import com.cra.portfolio.model.Application;
-import com.cra.portfolio.model.ApplicationsInterface;
-import com.cra.portfolio.model.ApplicationsKey;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ApplicationInterfaceResponse {
-    private ApplicationsKey id;
+    private Integer id;
     private Application applicationSrc;
     private Application applicationTarget;
     private String protocol;

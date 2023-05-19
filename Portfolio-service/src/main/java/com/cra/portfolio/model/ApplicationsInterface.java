@@ -18,16 +18,17 @@ import java.time.LocalDateTime;
 @Builder
 public class ApplicationsInterface {
 
-    @EmbeddedId
-    private ApplicationsKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
+
     @JsonIgnore
     @ManyToOne
-    @MapsId("applicationSrcId")
     @JoinColumn(name = "applicationSrc_id")
     private Application applicationSrc;
     @JsonIgnore
     @ManyToOne
-    @MapsId("applicationTargetId")
     @JoinColumn(name = "applicationTarget_id")
     private Application applicationTarget;
     private LocalDateTime deletedAt = null;
